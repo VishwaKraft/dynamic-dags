@@ -1,3 +1,3 @@
-FROM quay.io/astronomer/astro-runtime:8.6.0
-
-ENV AIRFLOW_VAR_DAG_NUMBER=5
+FROM apache/airflow:2.5.2
+COPY requirements.txt .
+RUN pip install -r requirements.txt
