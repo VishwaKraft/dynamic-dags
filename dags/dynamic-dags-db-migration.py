@@ -81,7 +81,7 @@ default_args = {
 }
 
 dag = DAG(
-    'migrate_dynamic_dag_tables',
+    'dynamic_dag_table_migration',
     default_args=default_args,
     schedule_interval='@once',
     catchup=False,

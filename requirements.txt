@@ -1,0 +1,2 @@
+git+https://github.com/amolsr/airflow-clickhouse-plugin.git@master#egg=airflow_clickhouse_plugin
+typing-extensions
