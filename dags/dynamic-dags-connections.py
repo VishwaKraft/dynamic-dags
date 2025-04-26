@@ -3,10 +3,8 @@ from airflow import settings
 from airflow.models.connection import Connection
 from airflow import DAG
 from airflow.operators.bash_operator import BashOperator
-from airflow.decorators import task
 from airflow.providers.amazon.aws.transfers.sql_to_s3 import SqlToS3Operator
 from airflow_clickhouse_plugin.operators.clickhouse_to_s3 import ClickhouseToS3Operator
-from airflow.datasets import Dataset
 from pytz import timezone
 import datetime as dt
 import pytz
@@ -58,14 +56,14 @@ def create_dag(dag_id, table_name, query, source, conn_id):
             (
                 start_dag
                 >> ClickhouseToS3Operator(
-                    task_id=f"clickhouse_to_s3_task_{table_name}",
+                    task_id=f"clickhouse_to_object_store_task_{table_name}",
                     clickhouse_conn_id=conn_id,
                     query=query,
                     parameters={
                         "start_timestamp": start_timestamp,
                         "end_timestamp": end_timestamp,
                     },
-                    s3_bucket="{{ var.value.get('AWS_S3_BUCKET') }}",
+                    s3_bucket="{{ var.value.get('MINIO_BUCKET') }}",
                     file_format="parquet",
                     s3_key="{{ var.value.get('ENV') }}" + f"/DynamicDags/{table_name}/{start_date_display}/data.parquet",
                     replace=True,
@@ -76,14 +74,14 @@ def create_dag(dag_id, table_name, query, source, conn_id):
             (
                 start_dag
                 >> SqlToS3Operator(
-                    task_id=f"sql_to_s3_task_{table_name}",
+                    task_id=f"sql_to_object_store_task_{table_name}",
                     sql_conn_id=conn_id,
                     query=query,
                     parameters={
                         "start_timestamp": start_timestamp,
                         "end_timestamp": end_timestamp,
                     },
-                    s3_bucket="{{ var.value.get('AWS_S3_BUCKET') }}",
+                    s3_bucket="{{ var.value.get('MINIO_BUCKET') }}",
                     file_format="parquet",
                     s3_key="{{ var.value.get('ENV') }}" + f"/DynamicDags/{table_name}/{start_date_display}/data.parquet",
                     replace=True,

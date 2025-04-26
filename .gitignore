@@ -5,3 +5,5 @@ airflow_settings.yaml
 *__pycache__
 mysql
 logs
+minio
+/dags/dynamic-dags.py

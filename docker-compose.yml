@@ -328,6 +328,23 @@ services:
    command:
      - bash 
      - sleep 2000
+
+ minio:
+    image: minio/minio:latest
+    container_name: minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9005:9000"
+      - "9001:9001"
+    volumes:
+      - ./minio/data:/data
+    networks:
+      - airflow_network
+    restart: unless-stopped
+
  # You can enable flower by adding "--profile flower" option e.g. docker-compose --profile flower up
  # or by explicitly targeted on the command line e.g. docker-compose up flower.
  # See: https://docs.docker.com/compose/profiles/
